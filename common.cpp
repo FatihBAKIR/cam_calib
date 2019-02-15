@@ -10,12 +10,20 @@ namespace ar {
         cv::cvtColor(rgb, gray, cv::COLOR_RGB2GRAY);
 
         std::vector<cv::Point2f> res;
-        bool found = !fast ? cv::findChessboardCorners(gray, sz, res) : cv::findChessboardCorners(gray, sz, res, cv::CALIB_CB_FAST_CHECK);
+        bool found = !fast ?
+                cv::findChessboardCorners(gray, sz, res) :
+                cv::findChessboardCorners(gray, sz, res, cv::CALIB_CB_FAST_CHECK);
 
         if (found) {
             cornerSubPix(gray, res, cv::Size(11, 11), cv::Size(-1, -1),
-                         cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 50, 0.00001));
+                         cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 150, 0.00001));
         }
+        else
+        {
+            return {};
+            throw std::runtime_error("can't find points!");
+        }
+
         return res;
     }
 

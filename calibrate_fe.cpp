@@ -33,7 +33,15 @@ int main(int argc, char** argv)
 
     std::vector<std::vector<cv::Point2f>> corners(ims.size());
     std::transform(mats.begin(), mats.end(), corners.begin(), [&](auto& mat){
-        return ar::find_corners(mat, checker_sz);
+        try {
+            return ar::find_corners(mat, checker_sz);
+        }
+        catch (std::exception& e)
+        {
+            auto idx = std::distance(&*mats.begin(), &mat);
+            std::cerr << "error on " << idx << '\n';
+            throw;
+        }
     });
 
     const auto points = ar::get_3d_points(checker_sz.height, checker_sz.width);
@@ -43,9 +51,13 @@ int main(int argc, char** argv)
     cv::Mat intrin, dist_coeffs;
     std::vector<cv::Mat> trans_vectors, rot_vectors;
 
-    cv::calibrateCamera(obj_points, corners, mats[0].size(),
+    cv::fisheye::calibrate(obj_points, corners, mats[0].size(),
             intrin, dist_coeffs,
-            rot_vectors, trans_vectors);
+            rot_vectors, trans_vectors,
+            cv::fisheye::CALIB_RECOMPUTE_EXTRINSIC |
+            cv::fisheye::CALIB_CHECK_COND |
+            cv::fisheye::CALIB_FIX_SKEW,
+            cv::TermCriteria(cv::TermCriteria::EPS | cv::TermCriteria::MAX_ITER, 30, 1e-6));
 
     double tot_err = 0;
 

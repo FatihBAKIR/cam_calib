@@ -33,16 +33,11 @@ int main(int argc, char** argv)
 
     cap.set(cv::CAP_PROP_FRAME_WIDTH, 960);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, 540);
-    cap.set(cv::CAP_PROP_AUTO_WB, 1);
-    cap.set(cv::CAP_PROP_FPS, 40.00);
-    cap.set(cv::CAP_PROP_AUTO_EXPOSURE, 1);
-    cap.set(cv::CAP_PROP_CONTRAST, 128);
-    cap.set(cv::CAP_PROP_SATURATION, 128);
 
     auto config = read_config(argv[1]);
     auto [intrin, coeff] = ar::deserialize(config);
 
-    ar::draw_thread drawer(intrin, coeff);
+    ar::draw_thread drawer(intrin, coeff, cv::Size(960, 540));
 
     const auto checker_sz = cv::Size(5, 7);
 
@@ -62,7 +57,7 @@ int main(int argc, char** argv)
         use_prev = false;
         if (corners.size() == world_points.size())
         {
-            if (cv::solvePnPRansac(world_points, corners, intrin, coeff, rvec, tvec, prv, use_prev))
+            if (cv::solvePnPRansac(world_points, corners, intrin, coeff, rvec, tvec, prv, use_prev, 500))
             {
                 drawer.push_frame(frame, rvec, tvec);
                 use_prev = true;

@@ -16,10 +16,16 @@ target_link_libraries(common PUBLIC stdc++fs yaml-cpp)
 add_executable(calibrate calibrate.cpp)
 target_link_libraries(calibrate common)
 
+add_executable(calibrate_fe calibrate_fe.cpp)
+target_link_libraries(calibrate_fe common)
+
 add_executable(take_calib_pics take_calib_pics.cpp)
 target_link_libraries(take_calib_pics common)
 
 add_executable(draw draw.cpp opengl_thread.cpp draw.hpp)
 target_link_libraries(draw common Threads::Threads renderer_lib)
+
+add_executable(undistort undistort.cpp)
+target_link_libraries(undistort common)
 
 add_subdirectory(rtk)
