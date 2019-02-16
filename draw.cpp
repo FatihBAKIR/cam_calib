@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         use_prev = false;
         if (corners.size() == world_points.size())
         {
-            if (cv::solvePnPRansac(world_points, corners, intrin, coeff, rvec, tvec, prv, use_prev, 500))
+            if (cv::solvePnP(world_points, corners, intrin, coeff, rvec, tvec))
             {
                 drawer.push_frame(frame, rvec, tvec);
                 use_prev = true;

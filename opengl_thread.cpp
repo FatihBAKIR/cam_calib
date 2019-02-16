@@ -333,7 +333,7 @@ namespace ar {
             head.mesh = &gl_meshes[i];
 
             head.transform->set_scale(glm::vec3(6.f, 6.f, 6.f) / glm::vec3(max, max, max));
-            head.transform->set_position(-mesh.get_bbox().position / glm::vec3(max, max, max));
+            head.transform->set_position(-mesh.get_bbox().position / glm::vec3(max, max, max) + glm::vec3(2, 3, 0));
             head.transform->rotate({ -90, 0, 0 });
             r.emplace_back(std::move(head));
         }

@@ -9,6 +9,8 @@ namespace ar {
     std::vector<cv::Point2f> find_corners(const cv::Mat &rgb, const cv::Size &sz, bool fast) {
         cv::cvtColor(rgb, gray, cv::COLOR_RGB2GRAY);
 
+        cv::equalizeHist(gray, gray);
+
         std::vector<cv::Point2f> res;
         bool found = !fast ?
                 cv::findChessboardCorners(gray, sz, res) :
